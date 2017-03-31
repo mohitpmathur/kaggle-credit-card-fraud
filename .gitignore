@@ -1,0 +1,22 @@
+# Packages #
+############
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Jupyter Notebooks #
+*.ipynb
+
+# Text Files #
+*.txt
+*.csv
+data/*.csv
+
+# Data Files #
+*.data
+data/*

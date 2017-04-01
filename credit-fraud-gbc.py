@@ -5,41 +5,29 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import train_test_split
+from sklearn.model_selection import GridSearchCV
+from sklearn.ensemble import GradientBoostingClassifier
 from sklearn import metrics
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.wrappers.scikit_learn import KerasClassifier
+
 
 df = pd.read_csv('data/creditcard.csv')
 
 Y = df['Class'].values
 df.drop(['Time', 'Class'], axis=1, inplace=True)
-X = df.values
 
-
-def baseline_model():
-    # Create model
-    model = Sequential()
-    model.add(Dense(29, input_dim=29, kernel_initializer='normal', activation='relu'))
-	model.add(Dense(1, kernel_initializer='normal', activation='sigmoid'))
-	# Compile model
-	model.compile(loss='binary_crossentropy', optimizer='adam')
-	return model
-
-
-X_train, X_test, y_train, y_test = train_test_split(X, 
+X_train, X_test, y_train, y_test = train_test_split(df, 
 													Y,
 													test_size=0.3,
 													random_state=42)
 
-
-estimator = KerasClassifier(build_fn=baseline_model,
-							nb_epoch=120,
-							batch_size=5,
-							verbose=2)
-kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-estimator.fit(X_train, y_train)
-y_pred = estimator.predict(X_test)
+params = {
+	'learning_rate': [0.001]
+}
+gbc = GradientBoostingClassifier()
+#kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+clf = GridSearchCV(gbc, params, cv=3)
+clf.fit(X_train, y_train)
+y_pred = clf.predict(X_test)
 
 fpr, tpr, _ = metrics.roc_curve(y_test, y_pred)
 print "AUC Score:", metrics.auc(fpr, tpr)

@@ -15,8 +15,11 @@
 # Text Files #
 *.txt
 *.csv
+*.log
 data/*.csv
 
 # Data Files #
 *.data
 data/*
+archive/*
+*.pkl
